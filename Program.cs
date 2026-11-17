@@ -37,6 +37,111 @@
 //   /                \
 // 10                  90
 
+// PART 2
+// 6a) 33 bf=0
+//
+// 6b)  33 bf=1
+//     /
+//    18 bf=0
+//
+// 6c)  33 bf=2     =LL=>    18 bf=0
+//     /                    /  \
+//    18 bf=1         bf=0 7    33 bf=0
+//    / 
+//   7 bf=0
+//
+// 6d)    18 bf=-1
+//       /  \
+// bf=0 7    33 bf=1
+//          /
+//    bf=0 25 
+// 
+//
+// 6e)    18 bf=-1
+//       /  \
+// bf=0 7    33 bf=0
+//          /  \
+//    bf=0 25  29 bf=0
+//
+//
+//
+// 7a)      14 bf=0
+//
+// 7b)      14 bf=-1
+//            \
+//             26 bf=0
+//
+// 7c)      14 bf=-2        =RR=>        26 bf=0
+//            \                         /  \
+//             26 bf=-1          bf=0 14    38 bf=0
+//              \
+//               38 bf=0
+//
+// 7d)        26 bf=-1
+//           /  \
+//    bf=0 14    38 bf=-1
+//                \
+//                 44 bf=0
+//
+// 7e)        26 bf=-2       =RL=>         26 bf=-2         =RR=>            26 bf=-1
+//           /  \                         /  \                              /  \
+//    bf=0 14    38 bf=-2          bf=0 14    38 bf=-2               bf=0 14    41 bf=0
+//                \                            \                               /  \
+//                 44 bf=1                      41 bf=-1                bf=0 38    44 bf=0
+//                /                              \
+//          bf=0 41                               44 bf=0
+//
+//
+//
+// 8) insert 42:
+//         71 bf=2
+//        /  \
+// bf=2 48    90 bf=0
+//     /
+//   39 bf=-1
+//     \
+//      42 bf=0
+//
+// LR, rotate left
+//         71 bf=2
+//        /  \
+// bf=2 48    90 bf=0
+//     /
+//   39 bf=1
+//   /
+//  42 bf=0
+//
+// LL, rotate right
+//             71 bf=1
+//            /  \
+//     bf=0 39    90 bf=0
+//         /  \
+//  bf=0 42    48 bf=0
+//
+//
+//
+// 9)
+// - insert 52: 52 bf=0
+// - insert 37: 37 bf=0, 52 bf=1
+// - insert 68: 68 bf=0, 52 bf=0
+// - insert 29: 29 bf=0, 37 bf=1, 52 bf=1
+// - insert 44: 44 bf=0, 37 bf=0, 52 bf=1
+// - insert 41: 41 bf=0, 44 bf=1, 37 bf=-1, 52 bf=2
+// - LR imbalance, rotate left at 37 then rotate right at 52
+// - insert 75: 75 bf=0, 68 bf=-1, 52 bf=-2, 44 bf=-1
+// - RR imbalance, rotate left at 68
+// - insert 80: 80 bf=0, 75 bf=-1, 68 bf=-1, 44 bf=-1
+// - insert 61: 61 bf=0, 52 bf=-1, 68 bf=0, 44 bf=-1
+// - insert 78: 78 bf=0, 80 bf=1, 75 bf=-2, 68 bf=-1, 44 bf=-2
+// - RL imbalance, rotate right at 80, then rotate left at 75
+// final tree:
+//                              44
+//                            /    \
+//                          37      68
+//                         /  \    /  \
+//                       29   41  52   78
+//                                 \   /\
+//                                 61 75 80
 
 
 internal class Program
