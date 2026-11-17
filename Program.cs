@@ -148,6 +148,200 @@ internal class Program
 {
     static void Main()
     {
+        Console.WriteLine("Insert 52");
+        AvlNode root = new(52);
+        Console.WriteLine("Insert 37");
+        AvlNode.Insert(root, 37);
+        Console.WriteLine("Insert 68");
+        AvlNode.Insert(root, 68);
+        Console.WriteLine("Insert 29");
+        AvlNode.Insert(root, 29);
+        Console.WriteLine("Insert 44");
+        AvlNode.Insert(root, 44);
+        Console.WriteLine("Insert 41");
+        AvlNode.Insert(root, 41);
+        Console.WriteLine("Insert 75");
+        AvlNode.Insert(root, 75);
+        Console.WriteLine("Insert 80");
+        AvlNode.Insert(root, 80);
+        Console.WriteLine("Insert 61");
+        AvlNode.Insert(root, 61);
+        Console.WriteLine("Insert 78");
+        AvlNode.Insert(root, 78);
         
+        Console.WriteLine();
+        Console.WriteLine("Root: " + root.Value);
+        Console.WriteLine("Height: " + AvlNode.GetHeight(root));
+        Console.WriteLine("Is Balanced: " + AvlNode.IsBalanced(root));
+        Console.WriteLine();
+
+        AvlNode root2 = new(1);
+        for (int i = 2; i <= 15; i++)
+        {
+            AvlNode.Insert(root2, i);
+        }
+        Console.WriteLine("Height: " + AvlNode.GetHeight(root2));
+
+    }
+}
+
+public class AvlNode
+{
+    public int Value;
+    public AvlNode Left;
+    public AvlNode Right;
+    public int Height;
+
+    public AvlNode(int value)
+    {
+        Value = value;
+        Height = 1;
+    }
+
+    public static int GetHeight(AvlNode node)
+    {
+        if (node == null)
+            return 0;
+
+        int leftHeight = GetHeight(node.Left);
+        int rightHeight = GetHeight(node.Right);
+
+        return int.Max(leftHeight, rightHeight) + 1;
+    }
+
+    public static int GetBalance(AvlNode node)
+    {
+        if (node == null)
+            return 0;
+        if (node.Left == null && node.Right == null)
+            return 0;
+        if (node.Left == null)
+            return 0 - node.Right.Height;
+        if (node.Right == null)
+            return node.Left.Height;
+        return node.Left.Height - node.Right.Height;
+    }
+
+    public static bool Balanced(AvlNode node)
+    {
+        int balanceFactor = GetBalance(node);
+        if (-1 <= balanceFactor && balanceFactor <= 1)
+            return true;
+        else
+            return false;
+    }
+
+    public static void UpdateHeight(AvlNode node)
+    {
+        if (node.Left == null && node.Right == null)
+            node.Height = 0;
+        else if (node.Left == null)
+            node.Height = node.Right.Height + 1;
+        else if (node.Right == null)
+            node.Height = node.Left.Height + 1;
+        else
+            node.Height = int.Max(node.Left.Height, node.Right.Height) + 1;
+    }
+
+    public static AvlNode RotateRight(AvlNode node)
+    {
+        AvlNode leftChild = node.Left;
+        AvlNode leftChildRightChild = leftChild.Right;
+
+        leftChild.Right = node;
+        node.Left = leftChildRightChild;
+
+        UpdateHeight(node);
+        UpdateHeight(leftChild);
+        return leftChild;
+    }
+
+    public static AvlNode RotateLeft(AvlNode node)
+    {
+        AvlNode rightChild = node.Right;
+        AvlNode rightChildLeftChild = rightChild.Left;
+
+        rightChild.Left = node;
+        node.Right = rightChildLeftChild;
+
+        UpdateHeight(node);
+        UpdateHeight(rightChild);
+        return rightChild;
+    }
+
+    public static AvlNode Insert(AvlNode node, int value)
+    {
+        if (node == null)
+            return new AvlNode(value);
+
+        if (value > node.Value)
+        {
+            node.Right = Insert(node.Right, value);
+            node.Right.Height = AvlNode.GetHeight(node.Right);
+        }
+        else if (value < node.Value)
+        {
+            node.Left = Insert(node.Left, value);
+            node.Left.Height = AvlNode.GetHeight(node.Left);
+        }
+
+        if (!Balanced(node))
+        {
+            int balanceFactor = GetBalance(node);
+            int leftBalance = GetBalance(node.Left);
+            int rightBalance = GetBalance(node.Right);
+            if (balanceFactor > 1 && leftBalance >= 0)
+            {
+                Console.WriteLine("LL, rotate right at " + node.Value);
+                RotateRight(node);
+            }
+            if (balanceFactor > 1 && leftBalance < 0)
+            {
+                Console.WriteLine("LR, rotate left at " + node.Left.Value);
+                Console.WriteLine("then rotate right at " + node.Value);
+                RotateLeft(node.Left);
+                RotateRight(node);
+            }
+            if (balanceFactor < -1 && rightBalance <= 0)
+            {
+                Console.WriteLine("RR, rotate left at " + node.Value);
+                RotateLeft(node);
+            }
+            if (balanceFactor < -1 && leftBalance > 0)
+            {
+                Console.WriteLine("RL, rotate right at " + node.Right.Value);
+                Console.WriteLine("then rotate left at " + node.Value);
+                RotateRight(node.Right);
+                RotateLeft(node);
+            }
+        }
+
+        return node;
+    }
+
+    public static void PrintInOrder(AvlNode node)
+    {
+        Console.WriteLine($"[{node.Left.Value},{node.Value},{node.Right.Value}]");
+    }
+
+    public static bool IsBalanced(AvlNode node)
+    {
+        if (node == null)
+            return true;
+
+        bool leftBalanced = IsBalanced(node.Left);
+        bool rightBalanced = IsBalanced(node.Right);
+
+        int leftHeight = GetHeight(node.Left);
+        int rightHeight = GetHeight(node.Right);
+        int balanceFactor = leftHeight - rightHeight;
+
+        if (-1 <= balanceFactor && balanceFactor <= 1)
+            return true;
+
+        if (leftBalanced && rightBalanced)
+            return true;
+
+        return false;
     }
 }
